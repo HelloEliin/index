@@ -19,12 +19,55 @@
       $emailErr="";
       $numberErr=""; ?>
 
+      <?php 
+      function test_input($data) {
+        $data = trim($data);
+        $data = stripslashes($data);
+        $data = htmlspecialchars($data);
+        return $data;
+      }
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $name = test_input($_POST["name"]);
+        $email = test_input($_POST["email"]);
+        $number = test_input($_POST["number"]);
+      }
+
+      if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+        if (empty($_POST["name"])) {
+          $nameErr = "Name is required";
+        } else {
+          $nameErr = test_input($_POST["name"]);  } 
+          if (!preg_match("/^[a-zA-Z-' ]*$/",$name)) {
+            $nameErr = "Only letters and white space allowed"; 
+        }
+      
+        if (empty($_POST["email"])) {
+          $emailErr = "Email is required";
+        } else {
+          $emailErr = test_input($_POST["email"]);
+
+          }
+          if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $emailErr = "Invalid email format"; 
+        }
+      
+        if (empty($_POST["number"])) {
+          $numberErr = "Number is required";
+        } else {
+          $numberErr = test_input($_POST["number"]);
+        } 
+    } 
+
+        ?>
+
 
     Name: <input type="text" name="name"> 
     <span class="error">* <?php echo $nameErr;?></span><br>
     Email: <input type="text" name="email"> 
     <span class="error">* <?php echo $emailErr;?></span><br>
-    Phone number: <input type="number">
+    Phone number: <input type="number" name="number">
     <span class="error">* <?php echo $numberErr;?></span>
     <input type="submit" value="submit" >
     
@@ -35,15 +78,17 @@
 
 <?php
     # Check if name and email fileds are empty
-    if(empty($_POST['name']) && empty($_POST['email'])){
+    if(empty($_POST['name']) && empty($_POST['email']) && empty($_POST['number'])){
         # If the fields are empty, display a message to the user
         echo " <br/> Please fill in the fields";
     # Process the form data if the input fields are not empty
     }else{
         $name= $_POST['name'];
         $email= $_POST['email'];
+        $number= $_POST['number'];
         echo ('Your Name is:     '. $name. '<br/>');
         echo ('Your Email is:  '   . $email. '<br/>');
+        echo ('Your Number is:  '   . $number. '<br/>');
     }
 
     
